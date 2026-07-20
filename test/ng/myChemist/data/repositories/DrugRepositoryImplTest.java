@@ -1,28 +1,32 @@
 package ng.myChemist.data.repositories;
 
 import ng.myChemist.data.models.Drug;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DrugRepositoryImplTest {
 
+    private  DrugRepositoryImpl repository ;
+
+    @BeforeEach
+    public void DrugRepositoryImpl(){
+        repository = new DrugRepositoryImpl();
+    }
+
     @Test
     public void TestAnEmptyRepository(){
-        DrugRepository repository = new DrugRepositoryImpl();
         assertEquals(0, repository.count());
     }
     @Test
     public void TestToSaveOneDrugAndCountBecomesOne(){
-        DrugRepository repository = new DrugRepositoryImpl();
         Drug drug = new Drug();
         repository.save(drug);
         assertEquals(1, repository.count());
     }
     @Test
     public void TestToSaveTwoDrugsAndCountBecomesTwo(){
-        DrugRepository repository = new DrugRepositoryImpl();
-
         Drug drug1 = new Drug();
         Drug drug2 = new Drug();
 
@@ -33,7 +37,6 @@ public class DrugRepositoryImplTest {
     }
     @Test
     public void TestToFindDrugByIdAndReturnCorrectDrug(){
-        DrugRepository repository = new DrugRepositoryImpl();
         Drug drug = new Drug();
         drug.setId("D001");
         repository.save(drug);
@@ -43,14 +46,10 @@ public class DrugRepositoryImplTest {
     }
     @Test
     public void TestToFindAllAndReturnEmptyWhenTheRepositoryIsEmpty(){
-        DrugRepository repository = new DrugRepositoryImpl();
-
         assertEquals(0, repository.findAll().size());
     }
     @Test
     public void TestThatFindAllMethodReturnsAllSavedDrugs(){
-        DrugRepository repository = new DrugRepositoryImpl();
-
         repository.save(new Drug());
         repository.save(new Drug());
         repository.save(new Drug());
@@ -61,8 +60,6 @@ public class DrugRepositoryImplTest {
     }
     @Test
     public void TestToDeleteDrugAndRepositoryBecomesEmpty(){
-        DrugRepository repository = new DrugRepositoryImpl();
-
         Drug drug = new Drug();
         drug.setId("D001");
 
@@ -73,8 +70,6 @@ public class DrugRepositoryImplTest {
     }
     @Test
     public void TestToDeleteOneDrugAndCountReducesByOne(){
-        DrugRepository repository = new DrugRepositoryImpl();
-
         Drug drug1 = new Drug();
         drug1.setId("D001");
 
@@ -89,8 +84,6 @@ public class DrugRepositoryImplTest {
     }
     @Test
     public void TestThatDeletedDrugsCannotBeFoundAgain(){
-        DrugRepository repository = new DrugRepositoryImpl();
-
         Drug drug = new Drug();
         drug.setId("D001");
 
@@ -101,8 +94,6 @@ public class DrugRepositoryImplTest {
     }
     @Test
     public void TestThatNonExistingDrugDoesNotChangeCount(){
-        DrugRepository repository = new DrugRepositoryImpl();
-
         Drug drug = new Drug();
         drug.setId("D001");
 

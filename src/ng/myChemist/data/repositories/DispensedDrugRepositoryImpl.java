@@ -6,19 +6,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DispensedDrugRepositoryImpl implements DispensedDrugRepository {
-    private List<DispensedDrug> DispensedDrugs = new ArrayList<>();
+    private List<DispensedDrug> dispensedDrugs = new ArrayList<>();
 
     @Override
-    public void save(DispensedDrug DispensedDrug) {
-        DispensedDrugs.add(DispensedDrug);
+    public void save(DispensedDrug dispensedDrug) {
+        dispensedDrugs.add(dispensedDrug);
 
     }
 
     @Override
     public DispensedDrug findById(String id) {
-        for(DispensedDrug DispensedDrug : DispensedDrugs){
-            if(DispensedDrug.getId().equals(id)){
-                return DispensedDrug;
+        for(DispensedDrug dispensedDrug : dispensedDrugs){
+            if(dispensedDrug.getId().equals(id)){
+                return dispensedDrug;
             }
         }
         return null;
@@ -26,20 +26,20 @@ public class DispensedDrugRepositoryImpl implements DispensedDrugRepository {
 
     @Override
     public List<DispensedDrug> findAll() {
-        return DispensedDrugs;
+        return dispensedDrugs;
     }
 
     @Override
     public void delete(String id) {
-        DispensedDrug DispensedDrug = findById(id);
+        DispensedDrug dispensedDrug = findById(id);
 
-        if(DispensedDrug != null) {
-            DispensedDrugs.remove(DispensedDrug);
+        if(dispensedDrug != null) {
+            dispensedDrugs.remove(dispensedDrug);
         }
     }
 
     @Override
     public int count() {
-        return DispensedDrugs.size();
+        return dispensedDrugs.size();
     }
 }

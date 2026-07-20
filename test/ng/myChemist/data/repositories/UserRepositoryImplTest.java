@@ -1,56 +1,69 @@
 package ng.myChemist.data.repositories;
 
 import ng.myChemist.data.models.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserRepositoryImplTest {
 
+    private  UserRepositoryImpl repository ;
+
+    @BeforeEach
+    public void UserRepositoryImpl(){
+        repository = new UserRepositoryImpl();
+    }
+
     @Test
     public void TestAnEmptyRepository(){
-        UserRepository repository = new UserRepositoryImpl();
         assertEquals(0, repository.count());
     }
     @Test
     public void TestToSaveOneUserAndCountBecomesOne(){
-        UserRepository repository = new UserRepositoryImpl();
-        User User = new User();
-        repository.save(User);
+        User user = new User();
+        repository.save(user);
         assertEquals(1, repository.count());
     }
     @Test
     public void TestToSaveTwoUsersAndCountBecomesTwo(){
-        UserRepository repository = new UserRepositoryImpl();
+        User user1 = new User();
+        User user2 = new User();
 
-        User User1 = new User();
-        User User2 = new User();
-
-        repository.save(User1);
-        repository.save(User2);
+        repository.save(user1);
+        repository.save(user2);
 
         assertEquals(2, repository.count());
     }
     @Test
     public void TestToFindUserByIdAndReturnCorrectUser(){
-        UserRepository repository = new UserRepositoryImpl();
-        User User = new User();
-        User.setId("D001");
-        repository.save(User);
+        User user = new User();
+        user.setId(1);
+        repository.save(user);
 
-        User foundUser = repository.findById("D001");
+        User foundUser = repository.findById(1);
         assertNotNull(foundUser);
     }
+
+    @Test
+    public void TestToFindUserByUsername_userExists_returnCorrectUser(){
+        User user = new User();
+        user.setId(1);
+        user.setUsername("User");
+
+        repository.save(user);
+
+        User foundUser = repository.findByUsername("User");
+        assertNotNull(foundUser);
+    }
+
     @Test
     public void TestToFindAllAndReturnEmptyWhenTheRepositoryIsEmpty(){
-        UserRepository repository = new UserRepositoryImpl();
 
         assertEquals(0, repository.findAll().size());
     }
     @Test
     public void TestThatFindAllMethodReturnsAllSavedUsers(){
-        UserRepository repository = new UserRepositoryImpl();
-
         repository.save(new User());
         repository.save(new User());
         repository.save(new User());
@@ -61,53 +74,45 @@ public class UserRepositoryImplTest {
     }
     @Test
     public void TestToDeleteUserAndRepositoryBecomesEmpty(){
-        UserRepository repository = new UserRepositoryImpl();
+        User user = new User();
+        user.setId(1);
 
-        User User = new User();
-        User.setId("D001");
+        repository.save(user);
 
-        repository.save(User);
-
-        repository.delete("D001");
+        repository.delete(1);
         assertEquals(0, repository.count());
     }
     @Test
     public void TestToDeleteOneUserAndCountReducesByOne(){
-        UserRepository repository = new UserRepositoryImpl();
+        User user1 = new User();
+        user1.setId(1);
 
-        User User1 = new User();
-        User1.setId("D001");
+        User user2 = new User();
+        user2.setId(2);
 
-        User User2 = new User();
-        User2.setId("D002");
+        repository.save(user1);
+        repository.save(user2);
 
-        repository.save(User1);
-        repository.save(User2);
-
-        repository.delete("D001");
+        repository.delete(1);
         assertEquals(1, repository.count());
     }
     @Test
     public void TestThatDeletedUsersCannotBeFoundAgain(){
-        UserRepository repository = new UserRepositoryImpl();
+        User user = new User();
+        user.setId(1);
 
-        User User = new User();
-        User.setId("D001");
+        repository.save(user);
+        repository.delete(1);
 
-        repository.save(User);
-        repository.delete("D001");
-
-        assertNull(repository.findById("D001"));
+        assertNull(repository.findById(1));
     }
     @Test
     public void TestThatNonExistingUserDoesNotChangeCount(){
-        UserRepository repository = new UserRepositoryImpl();
+        User user = new User();
+        user.setId(1);
 
-        User User = new User();
-        User.setId("D001");
-
-        repository.save(User);
-        repository.delete("D222");
+        repository.save(user);
+        repository.delete(2);
         assertEquals(1, repository.count());
     }
 }

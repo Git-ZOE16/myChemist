@@ -6,19 +6,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserRepositoryImpl implements UserRepository {
-    private List<User> Users = new ArrayList<>();
+    private List<User> users = new ArrayList<>();
 
     @Override
-    public void save(User User) {
-        Users.add(User);
+    public void save(User user) {
+        users.add(user);
 
     }
 
     @Override
-    public User findById(String id) {
-        for(User User : Users){
-            if(User.getId().equals(id)){
-                return User;
+    public User findById(int id) {
+        for(User user : users){
+            if(user.getId()== id){
+                return user;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public User findByUsername(String username){
+        for(User user : users){
+            if(user.getUsername().equals(username)){
+                return user;
             }
         }
         return null;
@@ -26,20 +36,20 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public List<User> findAll() {
-        return Users;
+        return users;
     }
 
     @Override
-    public void delete(String id) {
-        User User = findById(id);
+    public void delete(int id) {
+        User user = findById(id);
 
-        if(User != null) {
-            Users.remove(User);
+        if(user != null) {
+            users.remove(user);
         }
     }
 
     @Override
     public int count() {
-        return Users.size();
+        return users.size();
     }
 }

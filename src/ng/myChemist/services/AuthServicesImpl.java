@@ -1,4 +1,4 @@
 package ng.myChemist.services;
 
-public class AuthServiceTest {
+public class AuthServicesImpl {
 }
