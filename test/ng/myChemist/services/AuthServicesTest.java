@@ -72,6 +72,17 @@ public class AuthServicesTest {
         request.setUsername("");
         request.setPassword("150122");
 
-        IllegalArgumentException assertThrows = IllegalArgumentException
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,()-> authServices.login(request));
+        assertEquals("Username cannot be empty", exception.getMessage());
+    }
+
+    @Test
+    public void TestLoginUser_withEmptyPassword_throwsException(){
+        LoginRequest request = new LoginRequest();
+        request.setUsername("Oluyemi");
+        request.setPassword("");
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,()-> authServices.login(request));
+        assertEquals("Password cannot be empty", exception.getMessage());
     }
 }
