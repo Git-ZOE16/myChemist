@@ -46,7 +46,21 @@ public class BatchRepositoryImpl implements BatchRepository {
 
 @Override
     public int count(){
+
     return batches.size();
+}
+
+@Override
+    public List<Batch> findByDrugId(String drugId){
+
+    List<Batch> batchesForDrug = new ArrayList<>();
+
+    for (Batch batch : batches) {
+        if (batch.getDrug().getId().equals(drugId)){
+            batchesForDrug.add(batch);
+        }
+    }
+    return batchesForDrug;
 }
 
 }

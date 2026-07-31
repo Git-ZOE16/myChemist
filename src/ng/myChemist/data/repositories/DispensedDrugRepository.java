@@ -7,9 +7,13 @@ import java.util.List;
 public interface DispensedDrugRepository {
 
     void save(DispensedDrug dispensedDrug);
+
     DispensedDrug findById(String id);
+
     List<DispensedDrug> findAll();
+
     void delete(String id);
+
     int count();
 
 }

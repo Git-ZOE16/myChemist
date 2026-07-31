@@ -1,6 +1,7 @@
 package ng.myChemist.data.repositories;
 
 import ng.myChemist.data.models.DispensedDrug;
+import ng.myChemist.dto.request.DispenseDrugRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +13,8 @@ public class DispensedDrugRepositoryImplTest {
 
     @BeforeEach
         public void DispensedDrugRepositoryImpl(){
-         repository = new DispensedDrugRepositoryImpl();
+
+        repository = new DispensedDrugRepositoryImpl();
     }
 
     @Test
@@ -104,5 +106,16 @@ public class DispensedDrugRepositoryImplTest {
         repository.save(dispensedDrug);
         repository.delete("D222");
         assertEquals(1, repository.count());
+    }
+
+    @Test
+    public void TestDispensedDrugRequest(){
+        DispenseDrugRequest request = new DispenseDrugRequest();
+
+        request.setBatchId("B001");
+        request.setQuantity(5);
+
+        assertEquals("B001", request.getBatchId());
+        assertEquals(5, request.getQuantity());
     }
 }

@@ -1,13 +1,16 @@
 package ng.myChemist.util;
 
 import ng.myChemist.data.models.Batch;
+import ng.myChemist.data.models.DispensedDrug;
 import ng.myChemist.data.models.Drug;
 import ng.myChemist.data.models.User;
-import ng.myChemist.dto.request.AddBatchRequest;
-import ng.myChemist.dto.request.AddDrugRequest;
-import ng.myChemist.dto.request.RegisterUserRequest;
+import ng.myChemist.dto.request.*;
 import ng.myChemist.dto.response.FindBatchResponse;
 import ng.myChemist.dto.response.*;
+
+import java.lang.module.FindException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Mapper {
 
@@ -95,5 +98,60 @@ public class Mapper {
         response.setQuantity(batch.getQuantity());
 
         return response;
+    }
+
+    public static DispensedDrug map(DispenseDrugRequest request, Batch batch){
+
+        DispensedDrug dispensedDrug = new DispensedDrug();
+
+        dispensedDrug.setBatch(batch);
+        dispensedDrug.setPrice(batch.getPrice());
+        dispensedDrug.setQuantity(request.getQuantity());
+
+        return dispensedDrug;
+    }
+
+    public static FindDispensedDrugResponse mapToFindDispensedDrugResponse(DispensedDrug dispensedDrug){
+        if(dispensedDrug == null){
+            return null;
+        }
+        FindDispensedDrugResponse response = new FindDispensedDrugResponse();
+
+        response.setId(dispensedDrug.getId());
+        response.setQuantity(dispensedDrug.getQuantity());
+        response.setPrice(dispensedDrug.getPrice());
+
+        response.setDrugName(dispensedDrug.getBatch().getDrug().getName());
+
+        return response;
+    }
+
+    public static List<FindDrugResponse> mapToFindDrugResponse(List<Drug> drugs){
+        List<FindDrugResponse> responses = new ArrayList<>();
+
+        for(Drug drug : drugs){
+            responses.add(mapToFindDrugResponse(drug));
+        }
+        return responses;
+    }
+
+    public static List<FindBatchResponse> mapToFindBatchResponses(List<Batch> batches){
+
+        List<FindBatchResponse> responses = new ArrayList<>();
+
+        for (Batch batch : batches){
+            responses.add(mapToFindBatchResponse(batch));
+        }
+        return responses;
+    }
+
+    public static DispensedDrug map(DispenseDrugByNameRequest request, Batch batch){
+
+        DispensedDrug dispensedDrug = new DispensedDrug();
+
+        dispensedDrug.setBatch(batch);
+        dispensedDrug.setQuantity(request.getQuantity());
+
+        return dispensedDrug;
     }
 }

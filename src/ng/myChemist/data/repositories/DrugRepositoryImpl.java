@@ -12,9 +12,12 @@ public class DrugRepositoryImpl implements DrugRepository {
 
     @Override
     public void save(Drug drug) {
-        drug.setId(String.valueOf(nextId));
+
+        if(drug.getId() == null){
+            drug.setId(String.valueOf(nextId));
+            nextId++;
+        }
         drugs.add(drug);
-        nextId++;
 
     }
 

@@ -10,6 +10,12 @@ public class DispensedDrugRepositoryImpl implements DispensedDrugRepository {
 
     @Override
     public void save(DispensedDrug dispensedDrug) {
+
+        if(dispensedDrug.getId() == null) {
+            String id = String.format("DD%03d", dispensedDrugs.size() + 1);
+
+            dispensedDrug.setId(id);
+        }
         dispensedDrugs.add(dispensedDrug);
 
     }

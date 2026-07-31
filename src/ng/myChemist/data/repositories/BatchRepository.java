@@ -17,4 +17,6 @@ public interface BatchRepository {
     void deleteAll();
 
     int count();
+
+    List<Batch> findByDrugId(String drugId);
 }

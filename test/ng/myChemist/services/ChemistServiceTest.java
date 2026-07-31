@@ -1,12 +1,11 @@
 package ng.myChemist.services;
 
 import ng.myChemist.data.repositories.DrugRepository;
-import ng.myChemist.dto.request.AddBatchRequest;
-import ng.myChemist.dto.request.AddDrugRequest;
-import ng.myChemist.dto.request.RegisterUserRequest;
+import ng.myChemist.dto.request.*;
 import ng.myChemist.dto.response.*;
 import org.junit.jupiter.api.Test;
 import java.time.YearMonth;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -291,5 +290,256 @@ public class ChemistServiceTest {
         assertNull(deletedBatch);
         assertNotNull(remainingBatches);
     }
+
+    @Test
+    public void TestToDispenseDrug_BatchQuantityReduces(){
+        ChemistService chemistService = new ChemistService();
+
+        AddDrugRequest drugRequest = new AddDrugRequest();
+
+        drugRequest.setDrugName("Paracetamol");
+
+        AddDrugResponse drugResponse = chemistService.addDrug(drugRequest);
+
+        AddBatchRequest batchRequest = new AddBatchRequest();
+
+        batchRequest.setDrugId(drugResponse.getId());
+
+        batchRequest.setQuantity(100);
+
+        AddBatchResponse batchResponse = chemistService.addBatch(batchRequest);
+
+        DispenseDrugRequest dispenseRequest = new DispenseDrugRequest();
+
+        dispenseRequest.setBatchId(batchResponse.getId());
+        dispenseRequest.setQuantity(5);
+
+        chemistService.dispenseDrug(dispenseRequest);
+
+        FindBatchResponse response = chemistService.findBatch(batchResponse.getId());
+
+        assertEquals(95, response.getQuantity());
+    }
+
+    @Test
+    public void TestToDispenseDrug_DispensedDrugIsSaved(){
+
+        ChemistService chemistService = new ChemistService();
+
+        AddDrugRequest drugRequest = new AddDrugRequest();
+        drugRequest.setDrugName("Paracetamol");
+
+        AddDrugResponse drugResponse = chemistService.addDrug(drugRequest);
+
+        AddBatchRequest batchRequest = new AddBatchRequest();
+        batchRequest.setDrugId(drugResponse.getId());
+        batchRequest.setQuantity(100);
+
+        AddBatchResponse batchResponse = chemistService.addBatch(batchRequest);
+
+        DispenseDrugRequest dispenseRequest = new DispenseDrugRequest();
+        dispenseRequest.setBatchId(batchResponse.getId());
+        dispenseRequest.setQuantity(5);
+
+        DispenseDrugResponse response = chemistService.dispenseDrug(dispenseRequest);
+
+        assertNotNull(response);
+        assertNotNull(response.getId());
+        assertEquals("Drug dispensed Successfully", response.getMessage());
+
+    }
+
+    @Test
+    public void TestToFindDispensedDrug_DispensedDrugIsFound(){
+        ChemistService chemistService = new ChemistService();
+
+        AddDrugRequest drugRequest = new AddDrugRequest();
+        drugRequest.setDrugName("Paracetamol");
+
+        AddDrugResponse drugResponse = chemistService.addDrug(drugRequest);
+
+        AddBatchRequest batchRequest = new AddBatchRequest();
+        batchRequest.setDrugId(drugResponse.getId());
+        batchRequest.setQuantity(100);
+
+        AddBatchResponse batchResponse = chemistService.addBatch(batchRequest);
+
+        DispenseDrugRequest dispenseRequest = new DispenseDrugRequest();
+
+        dispenseRequest.setBatchId(batchResponse.getId());
+        dispenseRequest.setQuantity(5);
+
+        DispenseDrugResponse dispenseResponse = chemistService.dispenseDrug(dispenseRequest);
+
+
+        FindDispensedDrugResponse response = chemistService.findDispensedDrug(dispenseResponse.getId());
+
+        assertNotNull(response);
+        assertEquals(dispenseResponse.getId(), response.getId());
+        assertEquals(5, response.getQuantity());
+    }
+
+    @Test
+    public void TestToFind_AllDispensedDrugs(){
+        ChemistService chemistService = new ChemistService();
+
+        AddDrugRequest firstDrug = new AddDrugRequest();
+        firstDrug.setDrugName("Paracetamol");
+
+        AddDrugResponse firstDrugResponse = chemistService.addDrug(firstDrug);
+
+        AddBatchRequest firstBatch = new AddBatchRequest();
+        firstBatch.setDrugId(firstDrugResponse.getId());
+        firstBatch.setQuantity(100);
+
+        AddBatchResponse firstBatchResponse = chemistService.addBatch(firstBatch);
+
+        DispenseDrugRequest dispense1 = new DispenseDrugRequest();
+        dispense1.setBatchId(firstBatchResponse.getId());
+        dispense1.setQuantity(5);
+
+        chemistService.dispenseDrug(dispense1);
+
+
+
+        AddDrugRequest secondDrug = new AddDrugRequest();
+        secondDrug.setDrugName("Amatem");
+
+        AddDrugResponse secondDrugResponse = chemistService.addDrug(secondDrug);
+
+        AddBatchRequest secondBatch = new AddBatchRequest();
+        secondBatch.setDrugId(firstDrugResponse.getId());
+        secondBatch.setQuantity(50);
+
+        AddBatchResponse secondBatchResponse = chemistService.addBatch(secondBatch);
+
+        DispenseDrugRequest dispense2 = new DispenseDrugRequest();
+        dispense2.setBatchId(secondBatchResponse.getId());
+        dispense2.setQuantity(3);
+
+        chemistService.dispenseDrug(dispense2);
+
+        List<FindDispensedDrugResponse> responses = chemistService.findAllDispensedDrugs();
+
+        assertEquals(2, responses.size());
+
+    }
+
+    @Test
+    public void TestToDeleteDispensedDrug_DispensedDrugIsDeleted(){
+
+        ChemistService chemistService = new ChemistService();
+
+        AddDrugRequest drugRequest = new AddDrugRequest();
+        drugRequest.setDrugName("Paracetamol");
+
+        AddDrugResponse drugResponse = chemistService.addDrug(drugRequest);
+
+        AddBatchRequest batchRequest = new AddBatchRequest();
+        batchRequest.setDrugId(drugResponse.getId());
+        batchRequest.setQuantity(100);
+
+        AddBatchResponse batchResponse = chemistService.addBatch(batchRequest);
+
+        DispenseDrugRequest dispenseRequest = new DispenseDrugRequest();
+
+        dispenseRequest.setBatchId(batchResponse.getId());
+        dispenseRequest.setQuantity(5);
+
+        DispenseDrugResponse dispenseResponse = chemistService.dispenseDrug(dispenseRequest);
+
+
+        chemistService.deleteDispensedDrug(dispenseResponse.getId());
+
+        FindDispensedDrugResponse response = chemistService.findDispensedDrug(dispenseResponse.getId());
+
+        assertNull(response);
+    }
+
+    @Test
+    public void TestToFindAllDrugs_ReturnAllSavedDrugs(){
+        ChemistService chemistService = new ChemistService();
+
+        AddDrugRequest firstDrug = new AddDrugRequest();
+        firstDrug.setDrugName("Paracetamol");
+
+        AddDrugRequest secondDrug = new AddDrugRequest();
+        secondDrug.setDrugName("Amatem");
+
+        chemistService.addDrug(firstDrug);
+        chemistService.addDrug(secondDrug);
+
+        List<FindDrugResponse> drugs = chemistService.findAllDrugs();
+
+        assertNotNull(drugs);
+        assertEquals(2,drugs.size());
+
+        assertEquals("Paracetamol", drugs.get(0).getDrugName());
+        assertEquals("Amatem", drugs.get(1).getDrugName());
+    }
+
+    @Test
+    public void TestTo_FindAllBatches_ForOneDrug(){
+
+        ChemistService chemistService = new ChemistService();
+
+        AddDrugRequest drugRequest = new AddDrugRequest();
+        drugRequest.setDrugName("Paracetamol");
+
+        AddDrugResponse drugResponse = chemistService.addDrug(drugRequest);
+
+        AddBatchRequest firstBatch = new AddBatchRequest();
+        firstBatch.setDrugId(drugResponse.getId());
+        firstBatch.setExpiryDate(YearMonth.of(2026, 8));
+        firstBatch.setQuantity(100);
+
+        AddBatchRequest secondBatch = new AddBatchRequest();
+        secondBatch.setDrugId(drugResponse.getId());
+        secondBatch.setExpiryDate(YearMonth.of(2027, 12));
+        secondBatch.setQuantity(50);
+
+        chemistService.addBatch(firstBatch);
+        chemistService.addBatch(secondBatch);
+
+        List<FindBatchResponse> batches = chemistService.findBatchesByDrug(drugResponse.getId());
+
+        assertNotNull(batches);
+        assertEquals(2, batches.size());
+    }
+
+    @Test
+    public void TestToDispenseDrug_WithDrugId(){
+        ChemistService chemistService = new ChemistService();
+
+        AddDrugRequest drugRequest = new AddDrugRequest();
+        drugRequest.setDrugName("Paracetamol");
+
+        AddDrugResponse drugResponse = chemistService.addDrug(drugRequest);
+
+        AddBatchRequest firstBatch = new AddBatchRequest();
+        firstBatch.setDrugId(drugResponse.getId());
+        firstBatch.setExpiryDate(YearMonth.of(2026, 8));
+        firstBatch.setQuantity(100);
+
+        chemistService.addBatch(firstBatch);
+
+        DispenseDrugByNameRequest request = new DispenseDrugByNameRequest();
+        request.setDrugId(drugResponse.getId());
+        request.setQuantity(10);
+
+        DispenseDrugResponse response = chemistService.dispenseDrugByDrugId(request);
+
+        assertNotNull(response);
+        assertEquals("Drug dispensed Successfully", response.getMessage());
+    }
+
+    @Test
+    public void TestToDispenseDrugs_AcrossMultipleBatches(){
+
+        ChemistService chemistService = new ChemistService();
+
+
+    }
 }
+
 
